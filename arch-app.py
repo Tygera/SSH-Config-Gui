@@ -248,7 +248,7 @@ class KeyGenerationDialog(tk.Toplevel):
         self.destroy()
 
 
-class SybcomSshGui(tk.Tk):
+class SshGui(tk.Tk):
     # Label Konfiguration für die Details-Ansicht
     DETAIL_LABELS = {
         "host_alias": "🏷 Host-Alias",
@@ -880,5 +880,5 @@ class SybcomSshGui(tk.Tk):
 
 
 if __name__ == "__main__":
-    app = SybcomSshGui()
+    app = SshGui()
     app.mainloop()
