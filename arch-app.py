@@ -1,6 +1,7 @@
 import os
 import subprocess
 import sys
+import signal
 from dataclasses import dataclass, field
 from pathlib import Path
 try:
@@ -83,6 +84,21 @@ def getFirstAvailableFontFamily(preferred_families: list[str]) -> str:
 
     return ""
 
+def installSigintHandler(root: tk.Tk) -> None:
+    def handleSigint(signum, frame):
+        # Schedule GUI-safe work on the Tk event loop
+        def onGuiThread():
+            # Choose what you want:
+            # 1) Ignore silently:
+            # return
+
+            # 2) Ask user:
+            if messagebox.askyesno("Exit", "Ctrl+C received. Quit the application?"):
+                root.destroy()
+
+        root.after(0, onGuiThread)
+
+    signal.signal(signal.SIGINT, handleSigint)
 
 
 @dataclass
@@ -326,7 +342,7 @@ class SshGui(tk.Tk):
         scrollbar.grid(row=2, column=1, sticky="ns")
         self.tree.configure(yscrollcommand=scrollbar.set)
 
-        self.tree.bind("<Double-Button-1>", lambda e: self.connectPutty())
+        self.tree.bind("<Double-Button-1>", lambda e: self.connectNativeSsh())
         self.tree.bind("<<TreeviewSelect>>", self.onSelectEntry)
 
         # Buttons unten
